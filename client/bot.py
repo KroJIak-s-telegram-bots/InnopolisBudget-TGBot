@@ -127,7 +127,7 @@ async def getListCallback(callback: types.CallbackQuery):
     dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
     for index, applicant in enumerate(budgetInfoList):
         mainKeyboard = getMainKeyboard(userInfo) if index == len(budgetInfoList) - 1 else None
-        botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.info', [applicant.field, applicant.number, applicant.approzimateNumber,applicant.numberWithOriginal,
+        botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.info', [applicant.field, applicant.number, applicant.numberWithOriginal, applicant.approzimateNumber,
                                                                                                             applicant.priority, applicant.sumPoints, applicant.individualAchievements,
                                                                                                             applicant.isBvi, applicant.isOriginal, applicant.isGosUslugiOriginal]),
                                                                                                             reply_markup=mainKeyboard)
