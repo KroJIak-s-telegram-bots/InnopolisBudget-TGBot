@@ -1,4 +1,6 @@
 
+from copy import copy
+
 from utils.funcs import joinPath
 from utils.const import ConstPlenty
 from utils.objects.parser import Applicant
@@ -64,7 +66,14 @@ def getUserBudgetInfoListFromTable(userCode):
     innopolisTables = getInnopolisTables(tabulaTables)
     budgetInfoList = []
     for name, field in innopolisTables.items():
-        for applicant in field:
+        for index, applicant in enumerate(field):
+            if applicant.code != userCode and (not (applicant.isOriginal or applicant.isGosUslugiOriginal) or applicant.priority > 1):
+                innopolisTables[name][index] = None
+        innopolisTables[name] = [elm for elm in innopolisTables[name] if elm is not None]
+    for name, field in innopolisTables.items():
+        for index, applicant in enumerate(field):
+            userApplicant = copy(applicant)
+            userApplicant.approzimateNumber = index + 1
             if applicant.code == userCode:
-                budgetInfoList.append(applicant)
+                budgetInfoList.append(userApplicant)
     return budgetInfoList
