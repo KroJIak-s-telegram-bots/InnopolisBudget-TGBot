@@ -1,0 +1,13 @@
+services:
+  innopolisbudget:
+    build:
+      context: .
+    container_name: innopolisbudget-container
+    restart: always
+    volumes:
+      - ./cache:/workspace/cache
+      - ./client:/workspace/client
+      - ./db:/workspace/db
+      - ./utils:/workspace/utils
+    command: ["python3", "/workspace/client/bot.py"]
+

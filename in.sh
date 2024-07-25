@@ -1,0 +1,1 @@
+docker container exec -it innopolisbudget-container  "/bin/bash"
