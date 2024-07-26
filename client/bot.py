@@ -126,11 +126,13 @@ async def getListCallback(callback: types.CallbackQuery):
     botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.found', [len(budgetInfoList)]))
     dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
     for index, applicant in enumerate(budgetInfoList):
+        isBvi = '✓' if applicant.isBvi else '❌'
+        isOriginal = '✓' if applicant.isBvi else '❌'
+        isGosUslugiOriginal = '✓' if applicant.isBvi else '❌'
         mainKeyboard = getMainKeyboard(userInfo) if index == len(budgetInfoList) - 1 else None
         botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.info', [applicant.field, applicant.number, applicant.numberWithOriginal, applicant.approzimateNumber,
                                                                                                             applicant.priority, applicant.sumPoints, applicant.individualAchievements,
-                                                                                                            applicant.isBvi, applicant.isOriginal, applicant.isGosUslugiOriginal]),
-                                                                                                            reply_markup=mainKeyboard)
+                                                                                                            isBvi, isOriginal, isGosUslugiOriginal]), reply_markup=mainKeyboard)
         dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
 
 def isUnknownCommand(userInfo):

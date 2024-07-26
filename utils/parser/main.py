@@ -35,25 +35,24 @@ def getInnopolisTables(tabulaTables):
     for table in tabulaTables:
         for _, row in table.iterrows():
             line = row.to_list()
-            number = str(line[0])
-            try: number = int(float(number))
+            try: number = int(float(str(line[0]).replace(',', '.')))
             except: continue
             code, priority, isBvi, bviStatus, bviBased, sumPoints, bviRanking, individualAchievements, isOriginal, isGosUslugiOriginal = line[1:11]
             priority = int(priority)
-            isBvi = True if isBvi == '✓' else False
+            isBvi = True if isinstance(isBvi, str) else False
             sumPoints = float(sumPoints)
             bviRanking = float(str(bviRanking).replace(',', '.'))
             sumPoints = bviRanking if isBvi else sumPoints
             individualAchievements = int(individualAchievements)
-            isOriginal = True if isOriginal == '✓' else False
-            isGosUslugiOriginal = True if isGosUslugiOriginal == '✓' else False
+            isOriginal = True if isinstance(isOriginal, str) else False
+            isGosUslugiOriginal = True if isinstance(isGosUslugiOriginal, str) else False
 
             if number < lastNumber:
                 tableIndex += 1
                 countOriginal = 0
             tableName = const.parser.tableNames[tableIndex]
             if len(innopolisTables) <= tableIndex: innopolisTables[tableName] = []
-            newApplicant = Applicant(tableName, number, code, priority, sumPoints, individualAchievements, countOriginal + 1, isBvi, isOriginal, isGosUslugiOriginal)
+            newApplicant = Applicant(tableName, number, code, priority, sumPoints, individualAchievements, numberWithOriginal=countOriginal + 1, isBvi=isBvi, isOriginal=isOriginal, isGosUslugiOriginal=isGosUslugiOriginal)
             innopolisTables[tableName].append(newApplicant)
             lastNumber = number
             if isOriginal or isGosUslugiOriginal: countOriginal += 1
