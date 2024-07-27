@@ -52,7 +52,8 @@ def getInnopolisTables(tabulaTables):
                 countOriginal = 0
             tableName = const.parser.tableNames[tableIndex]
             if len(innopolisTables) <= tableIndex: innopolisTables[tableName] = []
-            newApplicant = Applicant(tableName, number, code, priority, sumPoints, individualAchievements, numberWithOriginal=countOriginal + 1, isBvi=isBvi, isOriginal=isOriginal, isGosUslugiOriginal=isGosUslugiOriginal)
+            newApplicant = Applicant(tableName, number, code, priority, sumPoints, individualAchievements, numberWithOriginal=countOriginal + 1,
+                                     isBvi=isBvi, isOriginal=isOriginal, isGosUslugiOriginal=isGosUslugiOriginal)
             innopolisTables[tableName].append(newApplicant)
             lastNumber = number
             if isOriginal or isGosUslugiOriginal: countOriginal += 1
@@ -76,3 +77,20 @@ def getUserBudgetInfoListFromTable(userCode):
             if applicant.code == userCode:
                 budgetInfoList.append(userApplicant)
     return budgetInfoList
+
+def getTotalPlaceInBudgetInfoList(userCode):
+    pdfPath = joinPath(const.path.cache, const.file.generalBudgetPdf)
+    saveGeneralBudgetPdf(pdfPath)
+    tabulaTables = getTabulaTables(pdfPath)
+    innopolisTables = getInnopolisTables(tabulaTables)
+    totalOriginalDict = {}
+    for name, field in innopolisTables.items():
+        for index, applicant in enumerate(field):
+            if applicant.code == userCode or applicant.isOriginal or applicant.isGosUslugiOriginal:
+                if applicant.code not in totalOriginalDict or applicant.priority < totalOriginalDict[applicant.code].priority:
+                    totalOriginalDict[applicant.code] = applicant
+    totalOriginalList = sorted(totalOriginalDict.values(), key=lambda applicant: applicant.sumPoints, reverse=True)
+    totalPlace = None
+    for index, applicant in enumerate(totalOriginalList):
+        if applicant.code == userCode: totalPlace = index
+    return totalPlace

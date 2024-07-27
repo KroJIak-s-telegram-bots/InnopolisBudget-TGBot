@@ -14,7 +14,7 @@ from utils.const import ConstPlenty
 from utils.funcs import joinPath, getConfigObject, getLogFileName
 from utils.database import dbUsersWorker, dbLocalWorker
 from utils.objects.client import UserInfo, CallbackUserInfo
-from utils.parser.main import getUserBudgetInfoListFromTable
+from utils.parser.main import getUserBudgetInfoListFromTable, getTotalPlaceInBudgetInfoList
 
 const = ConstPlenty()
 botConfig = getConfigObject(joinPath(const.path.config, const.file.config))
@@ -129,11 +129,14 @@ async def getListCallback(callback: types.CallbackQuery):
         isBvi = '✅' if applicant.isBvi else '❌'
         isOriginal = '✅' if applicant.isOriginal else '❌'
         isGosUslugiOriginal = '✅' if applicant.isGosUslugiOriginal else '❌'
-        mainKeyboard = getMainKeyboard(userInfo) if index == len(budgetInfoList) - 1 else None
         botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.info', [applicant.field, applicant.number, applicant.numberWithOriginal, applicant.approzimateNumber,
                                                                                                             applicant.priority, applicant.sumPoints, applicant.individualAchievements,
-                                                                                                            isBvi, isOriginal, isGosUslugiOriginal]), reply_markup=mainKeyboard)
+                                                                                                            isBvi, isOriginal, isGosUslugiOriginal]))
         dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
+    totalBudgetListPlace = getTotalPlaceInBudgetInfoList(user.code)
+    mainKeyboard = getMainKeyboard(userInfo)
+    botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.totalplace', [totalBudgetListPlace]), reply_markup=mainKeyboard)
+    dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
 
 def isUnknownCommand(userInfo):
     return userInfo.userText and userInfo.userText[0] == '/'
