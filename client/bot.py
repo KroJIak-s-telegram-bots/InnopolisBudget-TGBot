@@ -19,8 +19,8 @@ from utils.parser.main import getUserBudgetInfoListFromTable
 const = ConstPlenty()
 botConfig = getConfigObject(joinPath(const.path.config, const.file.config))
 const.addConstFromConfig(botConfig)
-logging.basicConfig(level=logging.INFO)
-# logging.basicConfig(level=logging.INFO, filename=joinPath(const.path.logs, getLogFileName()), filemode='w', format=const.logging.format)
+# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename=joinPath(const.path.logs, getLogFileName()), filemode='w', format=const.logging.format)
 dbUsers = dbUsersWorker(joinPath(const.path.users, const.file.database))
 dbLocal = dbLocalWorker()
 bot = Bot(const.telegram.token, default=DefaultBotProperties(parse_mode=const.default.parseMode))
@@ -50,7 +50,7 @@ def getUserInfo(message):
     dbLocal.addRemovedMessageIds(userInfo.userId, userInfo.messageId)
     userLogInfo = f'{userInfo} | {dbLocal.db[str(userInfo.userId)]}'
     logging.info(userLogInfo)
-    # print(userLogInfo)
+    print(userLogInfo)
     return userInfo
 
 async def removeLastMessageIds(userInfo):
@@ -126,9 +126,9 @@ async def getListCallback(callback: types.CallbackQuery):
     botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.found', [len(budgetInfoList)]))
     dbLocal.addRemovedMessageIds(userInfo.userId, botMessage.message_id)
     for index, applicant in enumerate(budgetInfoList):
-        isBvi = '✓' if applicant.isBvi else '❌'
-        isOriginal = '✓' if applicant.isOriginal else '❌'
-        isGosUslugiOriginal = '✓' if applicant.isGosUslugiOriginal else '❌'
+        isBvi = '✅' if applicant.isBvi else '❌'
+        isOriginal = '✅' if applicant.isOriginal else '❌'
+        isGosUslugiOriginal = '✅' if applicant.isGosUslugiOriginal else '❌'
         mainKeyboard = getMainKeyboard(userInfo) if index == len(budgetInfoList) - 1 else None
         botMessage = await callback.message.answer(getTranslation(userInfo, 'list.message.info', [applicant.field, applicant.number, applicant.numberWithOriginal, applicant.approzimateNumber,
                                                                                                             applicant.priority, applicant.sumPoints, applicant.individualAchievements,
