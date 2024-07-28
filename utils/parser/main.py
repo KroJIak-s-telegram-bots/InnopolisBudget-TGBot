@@ -37,7 +37,8 @@ def getInnopolisTables(tabulaTables):
             line = row.to_list()
             try: number = int(float(str(line[0]).replace(',', '.')))
             except: continue
-            code, priority, isBvi, bviStatus, bviBased, sumPoints, bviRanking, individualAchievements, isOriginal, isGosUslugiOriginal = line[1:11]
+            if len(line) == 13: code, priority, isBvi, sumPoints, bviRanking, individualAchievements, isOriginal, isGosUslugiOriginal = line[1], line[2], line[3], line[5], line[8], line[7], line[9], line[10]
+            else: code, priority, isBvi, sumPoints, bviRanking, individualAchievements, isOriginal, isGosUslugiOriginal = line[1], line[2], line[3], line[5], line[11], line[10], line[12], line[13]
             priority = int(priority)
             isBvi = True if isinstance(isBvi, str) else False
             sumPoints = float(sumPoints)
